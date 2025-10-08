@@ -1,0 +1,39 @@
+{
+  "name": "crypto-analysis",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
+    "next": "15.5.4",
+    "papaparse": "^5.5.3",
+    "postgres": "^3.4.7",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "recharts": "^3.2.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/papaparse": "^5.3.16",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.5",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

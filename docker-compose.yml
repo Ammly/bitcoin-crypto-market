@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: crypto_analysis_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: crypto_user
+      POSTGRES_PASSWORD: crypto_pass
+      POSTGRES_DB: crypto_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crypto_user -d crypto_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crypto_network
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: crypto_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@crypto.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - crypto_network
+    profiles:
+      - tools
+
+  # Optional: Redis for caching (recommended for production)
+  redis:
+    image: redis:7-alpine
+    container_name: crypto_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass redis_pass
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crypto_network
+    profiles:
+      - caching
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  crypto_network:
+    driver: bridge
